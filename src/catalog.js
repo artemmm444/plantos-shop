@@ -106,21 +106,21 @@ export const PLANTS = [
     id: 'pl-13', code: 'PL-13', name: 'Спатифиллум', latin: 'Spathiphyllum',
     category: 'shade', price: 1800, light: 'полутень', height: '40 см',
     water: 'раз в 5 дней', difficulty: 'просто', leaf: 'long',
-    image: './plants/pl-03.jpg',
+    image: './plants/pl-13.jpg',
     desc: 'Женское счастье. Очищает воздух и цветет белыми "парусами".'
   },
   {
     id: 'pl-14', code: 'PL-14', name: 'Крассула', latin: 'Crassula ovata',
     category: 'succulents', price: 1100, light: 'яркий свет', height: '25 см',
     water: 'раз в 14 дней', difficulty: 'просто', leaf: 'round',
-    image: './plants/pl-05.jpg',
+    image: './plants/pl-14.jpg',
     desc: 'Толстянка или денежное дерево. Неприхотливый суккулент.'
   },
   {
     id: 'pl-15', code: 'PL-15', name: 'Хлорофитум', latin: 'Chlorophytum comosum',
     category: 'light', price: 850, light: 'рассеянный', height: '30 см',
     water: 'раз в 7 дней', difficulty: 'просто', leaf: 'long',
-    image: './plants/pl-09.jpg',
+    image: './plants/pl-15.jpg',
     desc: 'Самый неприхотливый цветок, отлично фильтрует воздух.'
   }
 ]
