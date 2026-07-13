@@ -108,7 +108,7 @@ function PlantCard({ plant, inCart, onAdd, onOpen }) {
   return (
     <div className="card">
       <button className="card-figure" onClick={() => onOpen(plant)} aria-label={'Открыть ' + plant.name}>
-        <Leaf name={plant.leaf} />
+        <img src={plant.image} alt={plant.name} loading="lazy" />
         <span className="difficulty-pill">{plant.difficulty}</span>
       </button>
       <div className="card-body">
@@ -137,7 +137,9 @@ function ProductModal({ plant, inCart, onAdd, onClose }) {
     <div className={'modal' + (plant ? ' show' : '')} role="dialog" aria-modal="true">
       {plant && (
         <div className="modal-grid">
-          <div className="modal-fig" style={{ color: 'var(--lime)' }}><Leaf name={plant.leaf} /></div>
+          <div className="modal-fig">
+            <img src={plant.image} alt={plant.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
           <div className="modal-info">
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span className="m-code">{plant.code} · {catLabel(plant.category)}</span>
@@ -278,7 +280,9 @@ function CartDrawer({ open, items, plantsById, subtotal, onClose, onQty, onRemov
               const p = plantsById[id]
               return (
                 <div className="line-item" key={id}>
-                  <div className="li-fig" style={{ color: 'var(--forest)' }}><Leaf name={p.leaf} /></div>
+                  <div className="li-fig">
+                    <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
                   <div className="li-main">
                     <div className="li-name">{p.name}</div>
                     <div className="li-code">{p.code} · {RUB(p.price)}</div>
