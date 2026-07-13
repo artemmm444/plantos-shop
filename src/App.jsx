@@ -121,7 +121,7 @@ function PlantCard({ plant, inCart, onAdd, onOpen }) {
           <div className="card-latin">{plant.latin}</div>
         </button>
         <div className="card-foot">
-          <div className="price">{RUB(plant.price)}<br /><em>{plant.height} · {plant.light}</em></div>
+          <div className="price">{RUB(plant.price)}<em>{plant.height} · {plant.light}</em></div>
           <button className={'add' + (inCart ? ' added' : '')} onClick={() => onAdd(plant.id)}>
             {inCart ? 'в корзине' : '+ купить'}
           </button>
