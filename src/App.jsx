@@ -65,7 +65,7 @@ const Check = () => (
 )
 
 // ---- боковая панель фильтров ----
-function Sidebar({ open, catCounts, active, toggleCat, difficulty, setDifficulty, query, setQuery, onReset, dirty }) {
+function Sidebar({ open, catCounts, active, toggleCat, difficulty, setDifficulty, query, setQuery, onReset, dirty, favCount, favOnly, setFavOnly }) {
   const diffs = ['просто', 'внимание', 'сложно']
   return (
     <aside className={'sidebar' + (open ? ' open' : '')}>
@@ -74,6 +74,15 @@ function Sidebar({ open, catCounts, active, toggleCat, difficulty, setDifficulty
         <input className="search-in" placeholder="название или латынь"
           value={query} onChange={(e) => setQuery(e.target.value)}
           style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--line)', background: 'var(--paper)', fontSize: 13 }} />
+      </div>
+
+      <div className="fgroup">
+        <h4>Отложенные</h4>
+        <button className={'opt' + (favOnly ? ' on' : '')}
+          onClick={() => setFavOnly(!favOnly)} disabled={!favCount && !favOnly}>
+          <span>♥ избранное</span>
+          <span className="n">{favCount}</span>
+        </button>
       </div>
 
       <div className="fgroup">
@@ -104,9 +113,13 @@ function Sidebar({ open, catCounts, active, toggleCat, difficulty, setDifficulty
 }
 
 // ---- карточка товара ----
-function PlantCard({ plant, inCart, onAdd, onOpen }) {
+function PlantCard({ plant, inCart, onAdd, onOpen, isFav, onFav }) {
   return (
     <div className="card">
+      <button className={'fav-btn' + (isFav ? ' on' : '')} onClick={() => onFav(plant.id)}
+        aria-label={isFav ? 'Убрать из избранного' : 'В избранное'} aria-pressed={isFav}>
+        {isFav ? '♥' : '♡'}
+      </button>
       <button className="card-figure" onClick={() => onOpen(plant)} aria-label={'Открыть ' + plant.name}>
         <img src={plant.image} alt={plant.name} loading="lazy" />
         <span className="difficulty-pill">{plant.difficulty}</span>
@@ -328,11 +341,16 @@ function Toast({ show, text }) {
 
 // ---- корень приложения ----
 const CART_KEY = 'plantos_cart'
+const FAV_KEY = 'plantos_fav'
 
 export default function App() {
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || [] } catch { return [] }
   })
+  const [favs, setFavs] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY)) || [] } catch { return [] }
+  })
+  const [favOnly, setFavOnly] = useState(false)
   const [activeCats, setActiveCats] = useState([])
   const [difficulty, setDifficulty] = useState(null)
   const [query, setQuery] = useState('')
@@ -344,6 +362,8 @@ export default function App() {
   const toastTimer = useRef()
 
   useEffect(() => { localStorage.setItem(CART_KEY, JSON.stringify(cart)) }, [cart])
+  useEffect(() => { localStorage.setItem(FAV_KEY, JSON.stringify(favs)) }, [favs])
+  useEffect(() => { if (favOnly && favs.length === 0) setFavOnly(false) }, [favs, favOnly])
 
   const plantsById = useMemo(() => Object.fromEntries(PLANTS.map((p) => [p.id, p])), [])
 
@@ -356,6 +376,7 @@ export default function App() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     let list = PLANTS.filter((p) => {
+      if (favOnly && !favs.includes(p.id)) return false
       if (activeCats.length && !activeCats.includes(p.category)) return false
       if (difficulty && p.difficulty !== difficulty) return false
       if (q && !(p.name.toLowerCase().includes(q) || p.latin.toLowerCase().includes(q))) return false
@@ -368,7 +389,7 @@ export default function App() {
       name: (a, b) => a.name.localeCompare(b.name, 'ru'),
     }
     return [...list].sort(by[sort])
-  }, [activeCats, difficulty, query, sort])
+  }, [activeCats, difficulty, query, sort, favOnly, favs])
 
   const cartIds = useMemo(() => new Set(cart.map((i) => i.id)), [cart])
   const cartCount = cart.reduce((s, i) => s + i.qty, 0)
@@ -394,10 +415,16 @@ export default function App() {
   }
   const removeItem = (id) => setCart((c) => c.filter((i) => i.id !== id))
 
+  const toggleFav = (id) => {
+    const adding = !favs.includes(id)
+    setFavs((f) => (adding ? [...f, id] : f.filter((x) => x !== id)))
+    flash(plantsById[id].name + (adding ? ' — в избранном' : ' — убрано из избранного'))
+  }
+
   const toggleCat = (slug) =>
     setActiveCats((a) => (a.includes(slug) ? a.filter((s) => s !== slug) : [...a, slug]))
-  const resetFilters = () => { setActiveCats([]); setDifficulty(null); setQuery('') }
-  const dirty = activeCats.length > 0 || difficulty !== null || query !== ''
+  const resetFilters = () => { setActiveCats([]); setDifficulty(null); setQuery(''); setFavOnly(false) }
+  const dirty = activeCats.length > 0 || difficulty !== null || query !== '' || favOnly
 
   return (
     <>
@@ -430,6 +457,9 @@ export default function App() {
           setQuery={setQuery}
           onReset={resetFilters}
           dirty={dirty}
+          favCount={favs.length}
+          favOnly={favOnly}
+          setFavOnly={setFavOnly}
         />
 
         <main className="main">
@@ -449,7 +479,8 @@ export default function App() {
           {filtered.length ? (
             <div className="grid">
               {filtered.map((p) => (
-                <PlantCard key={p.id} plant={p} inCart={cartIds.has(p.id)} onAdd={addToCart} onOpen={setModal} />
+                <PlantCard key={p.id} plant={p} inCart={cartIds.has(p.id)} onAdd={addToCart} onOpen={setModal}
+                  isFav={favs.includes(p.id)} onFav={toggleFav} />
               ))}
             </div>
           ) : (

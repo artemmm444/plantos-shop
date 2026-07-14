@@ -391,6 +391,17 @@
       .cart-btn { padding: 0 14px; }
       .cart-btn .cart-total { display: none; }
     }
+    .fav-btn {
+      position: absolute; top: 10px; right: 10px; z-index: 3;
+      width: 34px; height: 34px; border: 1px solid var(--line);
+      background: var(--paper); color: var(--muted);
+      font-size: 17px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .2s, border-color .2s, transform .15s;
+    }
+    .fav-btn:hover { border-color: var(--forest); color: var(--forest); }
+    .fav-btn.on { color: var(--forest); border-color: var(--forest); }
+    .fav-btn.on:active, .fav-btn:active { transform: scale(.88); }
   </style>
 </head>
 <body>
