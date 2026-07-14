@@ -411,6 +411,12 @@
       .card-figure img { transition: none; }
       .fav-btn.on { animation: none; }
     }
+    .difficulty-pill.d-ok { border-left: 3px solid #2e7d4f; }
+    .difficulty-pill.d-mid { border-left: 3px solid #b7791f; }
+    .difficulty-pill.d-hard { border-left: 3px solid #b3382c; }
+    @keyframes countBump { 0% { transform: scale(1); } 40% { transform: scale(1.45); } 100% { transform: scale(1); } }
+    .cart-btn .count { animation: countBump .3s ease; }
+    @media (prefers-reduced-motion: reduce) { .cart-btn .count { animation: none; } }
   </style>
 </head>
 <body>

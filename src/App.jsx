@@ -122,7 +122,7 @@ function PlantCard({ plant, inCart, onAdd, onOpen, isFav, onFav }) {
       </button>
       <button className="card-figure" onClick={() => onOpen(plant)} aria-label={'Открыть ' + plant.name}>
         <img src={plant.image} alt={plant.name} loading="lazy" />
-        <span className="difficulty-pill">{plant.difficulty}</span>
+        <span className={'difficulty-pill d-' + ({ 'просто': 'ok', 'внимание': 'mid', 'сложно': 'hard' }[plant.difficulty] || 'ok')}>{plant.difficulty}</span>
       </button>
       <div className="card-body">
         <div className="card-code">
@@ -441,7 +441,7 @@ export default function App() {
         <button className="cart-btn" onClick={() => setDrawer(true)}>
           <span>КОРЗИНА</span>
           <span className="cart-total">{RUB(subtotal)}</span>
-          <span className="count">{cartCount}</span>
+          <span className="count" key={cartCount}>{cartCount}</span>
         </button>
       </header>
 
