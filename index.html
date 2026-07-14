@@ -402,6 +402,15 @@
     .fav-btn:hover { border-color: var(--forest); color: var(--forest); }
     .fav-btn.on { color: var(--forest); border-color: var(--forest); }
     .fav-btn.on:active, .fav-btn:active { transform: scale(.88); }
+    .card-figure { overflow: hidden; }
+    .card-figure img { transition: transform .6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .card:hover .card-figure img { transform: scale(1.06); }
+    @keyframes favpop { 0% { transform: scale(1); } 45% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    .fav-btn.on { animation: favpop .35s ease; }
+    @media (prefers-reduced-motion: reduce) {
+      .card-figure img { transition: none; }
+      .fav-btn.on { animation: none; }
+    }
   </style>
 </head>
 <body>
